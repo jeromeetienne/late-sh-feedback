@@ -1,0 +1,27 @@
+{
+  "name": "late-sh-feedback",
+  "version": "1.0.0",
+  "description": "sort out #bugs and #suggestions from late.sh",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "import:feedback": "tsx scripts/import_feedback.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeromeetienne/late-sh-feedback.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/jeromeetienne/late-sh-feedback/issues"
+  },
+  "homepage": "https://github.com/jeromeetienne/late-sh-feedback#readme",
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}
