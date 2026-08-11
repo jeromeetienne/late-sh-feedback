@@ -6,6 +6,8 @@ Root of the late-sh-feedback project. Sorts out bugs and suggestions from the la
 ## Key Exports & Entry Points
 - `scripts/import_feedback.ts`: Downloads the feedback text files into `data/feedback`, run with `npm run import:feedback`.
 - `data/`: Local copy of the downloaded feedback data. See `data/CONTEXT.md`.
+- `docs/ingestion_process.md`: The process that turns the feedback files into GitHub issues on `jeromeetienne/late-sh-feedback`.
+- `.claude/skills/`: The `/backfill-late-sh-issues` and `/update-late-sh-issues` Claude Code skills that carry out that process. See `.claude/skills/CONTEXT.md`.
 
 ## Local Rules & Boundaries
 - TypeScript scripts live under `scripts/` and are run with `tsx`, following the style rules in the user's global TypeScript style guide.
