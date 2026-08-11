@@ -38,6 +38,7 @@ Area, exactly one of, chosen from the `late-ssh/src/app/*` module that the theme
 - `area:terminal` — SSH auth and connection, clipboard and copy-paste, resize, keybinds.
 - `area:economy` — chips, leaderboard, shop, inventory, daily quests.
 - `area:voice` — voice and clubhouse modules.
+- `area:pets` — pet, aquarium, and bonsai modules.
 
 Review state, added by a human, never by a skill:
 

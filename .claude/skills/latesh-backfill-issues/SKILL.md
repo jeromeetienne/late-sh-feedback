@@ -40,7 +40,7 @@ This skill takes one optional argument.
    - `## What is broken` (bug) or `## What is being asked` (suggestion).
    - `## What people said`, one bullet per report, exactly in this shape: `- {datetime, UTC} **{nickname}**: "{content}" [link]({permalink})`, with the permalink pinned to the commit resolved in step 1, in the form `https://github.com/mpiorowski/late-sh/blob/{commitSha}/feedback/{fileName}#L{lineNumber}`.
    - Closing line: `Reported {N} times, from {first date} to {last date}. If you have seen this too, add a 👍 to this issue.` (bug) or `... If you want this too, add a 👍 to this issue.` (suggestion).
-   - Exactly one type label (`bug` or `suggestion`) and exactly one area label (`area:games`, `area:chat`, `area:directory`, `area:audio`, `area:notifications`, `area:profile`, `area:theming`, `area:terminal`, `area:economy`, or `area:voice`). Never add the `confirmed` label — that is added by a human reviewing the issue, never by this skill.
+   - Exactly one type label (`bug` or `suggestion`) and exactly one area label (`area:games`, `area:chat`, `area:directory`, `area:audio`, `area:notifications`, `area:profile`, `area:theming`, `area:terminal`, `area:economy`, `area:voice`, or `area:pets`). Never add the `confirmed` label — that is added by a human reviewing the issue, never by this skill.
 5. Show every draft to the person running this skill: title, labels, and full body. Wait for them to say which ones to publish. Do not call `gh issue create` before that — publishing is publishing public content, and it always needs a person's go-ahead first.
 6. Publish the confirmed drafts with `gh issue create --repo jeromeetienne/late-sh-feedback`.
 7. Write `data/ingestion/state.yaml` with the commit hash resolved in step 1:
