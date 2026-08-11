@@ -93,7 +93,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
   }
 
   body {
-    padding: clamp(20px, 4vw, 56px) clamp(16px, 5vw, 64px) 64px;
+    padding: 40px 48px 56px;
   }
 
   .page {
@@ -162,7 +162,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
   .kpi .n.warn { color: var(--accent); }
 
   .kpi .l {
-    font-size: 11.5px;
+    font-size: 12.5px;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: var(--muted);
@@ -176,7 +176,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
   .panel-title {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--muted);
@@ -184,7 +184,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
   }
 
   .panel-note {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--muted);
     margin: 0 0 18px;
     line-height: 1.5;
@@ -198,7 +198,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
   .area-row {
     display: grid;
-    grid-template-columns: 108px 1fr 34px;
+    grid-template-columns: 170px 1fr 40px;
     align-items: center;
     gap: 12px;
   }
@@ -207,7 +207,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
   .area-name {
     font-family: var(--mono);
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--ink);
     white-space: nowrap;
     overflow: hidden;
@@ -228,7 +228,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
   .area-total {
     font-family: var(--mono);
-    font-size: 12.5px;
+    font-size: 14px;
     text-align: right;
     font-variant-numeric: tabular-nums;
     color: var(--muted);
@@ -247,7 +247,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
     align-items: center;
     gap: 7px;
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
   }
 
@@ -288,7 +288,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
     display: flex;
     justify-content: space-between;
     font-family: var(--mono);
-    font-size: 12.5px;
+    font-size: 14px;
   }
 
   .donut-legend-row .k { display: flex; align-items: center; gap: 7px; color: var(--muted); }
@@ -302,7 +302,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
   }
 
   .ring-caption {
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--muted);
     text-align: center;
     line-height: 1.5;
@@ -333,7 +333,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
   .hist-n {
     font-family: var(--mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
@@ -348,14 +348,14 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
     flex: 1;
     text-align: center;
     font-family: var(--mono);
-    font-size: 9.5px;
+    font-size: 12px;
     color: var(--muted);
     white-space: nowrap;
   }
 
   .foot {
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--muted);
     text-align: center;
     padding-top: 8px;
@@ -416,7 +416,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
           <circle id="donut-bug" cx="75" cy="75" r="58" fill="none" stroke="var(--bug)" stroke-width="20"
                   stroke-dasharray="{{DONUT_BUG_DASHARRAY}}" transform="rotate({{DONUT_BUG_ROTATE}} 75 75)"></circle>
           <text x="75" y="70" text-anchor="middle" class="donut-center-label" fill="var(--ink)" font-family="var(--mono)">{{TOTAL}}</text>
-          <text x="75" y="88" text-anchor="middle" fill="var(--muted)" font-family="var(--mono)" font-size="10">issues</text>
+          <text x="75" y="88" text-anchor="middle" fill="var(--muted)" font-family="var(--mono)" font-size="11.5">issues</text>
         </svg>
         <div class="donut-legend">
           <div class="donut-legend-row"><span class="k"><span class="swatch" style="background:var(--bug)"></span>bug</span><span class="v">{{BUG_COUNT}} · {{BUG_PERCENT}}%</span></div>
@@ -434,7 +434,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
           <circle cx="75" cy="75" r="58" fill="none" stroke="var(--accent)" stroke-width="20"
                   stroke-dasharray="{{RING_DASHARRAY}}" transform="rotate(-90 75 75)"></circle>
           <text x="75" y="70" text-anchor="middle" class="donut-center-label" fill="var(--ink)" font-family="var(--mono)">{{CONFIRMED_PERCENT}}%</text>
-          <text x="75" y="88" text-anchor="middle" fill="var(--muted)" font-family="var(--mono)" font-size="10">confirmed</text>
+          <text x="75" y="88" text-anchor="middle" fill="var(--muted)" font-family="var(--mono)" font-size="11.5">confirmed</text>
         </svg>
         <p class="ring-caption">{{CONFIRMED_COUNT}} of {{TOTAL}} open issues carry the <code style="font-family:var(--mono)">confirmed</code> label.</p>
       </div>
@@ -507,10 +507,11 @@ The Artifact tool and the sandboxed browser pane cannot screenshot a locally-wri
 2. Render the page to a PNG file with a headless Chrome or Chromium binary already installed on the machine (for example, on macOS, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`):
    ```
    {chromeBinaryPath} --headless --disable-gpu --screenshot={repoRoot}/data/tracker-status/dashboard.png \
-     --window-size=1600,1300 --hide-scrollbars http://127.0.0.1:{port}/latesh-tracker-status.html
+     --window-size=1085,1300 --hide-scrollbars http://127.0.0.1:{port}/latesh-tracker-status.html
    ```
+   The window width, `1085`, is not arbitrary — it is the `.page` element's `max-width: 980px` plus its `body` padding of `48px` on each side, from the template in step 3, plus a few pixels of slack. Rendering at a much wider window (for example `1600`) leaves the page centered in a lot of empty space, which shows up as huge dead margins on both sides of the image. If the `max-width` or the horizontal `body` padding in the template ever changes, change this width to match — `980 + 2 * {horizontal padding}` plus a small margin.
 3. Stop the local HTTP server.
-4. Read the resulting `data/tracker-status/dashboard.png` back to confirm the four panels (KPI row, area breakdown, donut, ring, histogram) rendered correctly, with no mojibake in the em dash or arrow characters.
+4. Read the resulting `data/tracker-status/dashboard.png` back to confirm the four panels (KPI row, area breakdown, donut, ring, histogram) rendered correctly, every label is legible at normal size, and there is no mojibake in the em dash or arrow characters.
 
 ### 6. Make sure README.md links to the image, at the top of the file
 
