@@ -4,7 +4,7 @@ Sort out the `#bugs` and `#suggestions` feedback from late.sh.
 
 The late.sh project lives at [github.com/mpiorowski/late-sh](https://github.com/mpiorowski/late-sh/).
 
-## Mission
+## Purpose
 
 The `#bugs` and `#suggestions` channels of late.sh collect a lot of feedback from the users of late.sh. That feedback arrives as a long flow of chat messages, one after the other. The flow is easy to write into and hard to read back. A message from three months ago looks the same as a message from yesterday. The same bug reported by five different people looks like five different bugs. Nothing says which item matters most.
 
