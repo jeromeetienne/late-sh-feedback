@@ -21,4 +21,4 @@ late-sh-feedback does not replace the `#bugs` and `#suggestions` channels of lat
 
 ## Usage
 
-See [`docs/ingestion_process.md`](docs/ingestion_process.md) for the full process. In short, run the `/latesh-backfill-issues` Claude Code skill once to publish the first set of GitHub issues, and the `/latesh-update-issues` skill every time after that.
+See [`docs/ingestion_process.md`](docs/ingestion_process.md) for the full process. In short, run the `/latesh-backfill-issues` Claude Code skill once to publish the first set of GitHub issues, and the `/latesh-update-issues` skill every time after that. Run the `/latesh-tracker-status` Claude Code skill any time to regenerate the status image below, and commit and push it.
