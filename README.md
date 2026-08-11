@@ -12,7 +12,7 @@ The mission of late-sh-feedback is to turn that flow of chat messages into an or
 
 To do that, late-sh-feedback:
 
-- Imports `bugs.txt` and `suggestions.txt` from the `feedback` folder of the `mpiorowski/late-sh` GitHub repository into `data/feedback`.
+- Reads `bugs.txt` and `suggestions.txt` straight from the `feedback` folder of the `mpiorowski/late-sh` GitHub repository, pinned to one commit at a time — no local copy is kept.
 - Groups the messages that report the same bug, or ask for the same suggestion, into a single work item.
 - Gives each work item a priority, so that the most important work items are visible first.
 - Keeps the result in a form that a person can read in a few minutes, without reading every message of the `#bugs` and `#suggestions` channels.
@@ -21,8 +21,4 @@ late-sh-feedback does not replace the `#bugs` and `#suggestions` channels of lat
 
 ## Usage
 
-Import the feedback files from the `mpiorowski/late-sh` GitHub repository:
-
-```bash
-npm run import:feedback
-```
+See [`docs/ingestion_process.md`](docs/ingestion_process.md) for the full process. In short, run the `/backfill-late-sh-issues` Claude Code skill once to publish the first set of GitHub issues, and the `/update-late-sh-issues` skill every time after that.

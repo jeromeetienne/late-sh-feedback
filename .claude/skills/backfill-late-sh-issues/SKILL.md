@@ -5,13 +5,13 @@ description: Runs the first ingestion of late.sh feedback, reading the whole his
 
 # Backfill late.sh issues
 
-Full design and rationale for every step below live in [`docs/ingestion_process.md`](../../../docs/ingestion_process.md) — read it first if anything here is unclear. This skill runs the first ingestion: the one pass that reads the whole history of `data/feedback/bugs.txt` and `data/feedback/suggestions.txt`, not only the most recent months.
+Full design and rationale for every step below live in [`docs/ingestion_process.md`](../../../docs/ingestion_process.md) — read it first if anything here is unclear. This skill runs the first ingestion: the one pass that reads the whole history of `bugs.txt` and `suggestions.txt`, straight from `mpiorowski/late-sh` on GitHub, not only the most recent months. No local copy of either file is written.
 
 Do not run this skill if `data/ingestion/state.yaml` already exists and has a `lastIngestedCommit` — that means a first ingestion already happened, and what is needed now is `/update-late-sh-issues` instead. Ask the person running this skill to confirm before continuing if that file is already present.
 
 ## Steps
 
-1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch (for example with `gh api repos/mpiorowski/late-sh/commits/main --jq .sha`). Run `npm run import:feedback` to refresh `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` so both match that commit.
+1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch (for example with `gh api repos/mpiorowski/late-sh/commits/main --jq .sha`). Fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly (for example with `gh api repos/mpiorowski/late-sh/contents/feedback/{fileName}?ref={commitSha} --jq .content | base64 -d`, or the equivalent raw-content URL pinned to that commit). Do not write either file to disk — read the content directly.
 2. Read both files in full. Group every message into themes: one theme per underlying bug or underlying request, even when it is worded differently across messages, or split across the two files. Do this by reading and judgment, not by a keyword match — see `docs/ingestion_process.md` for a worked example.
 3. For each theme, cross-check the pull request history of `mpiorowski/late-sh` before drafting anything:
    - If a merged pull request already does what the theme asks, or already fixes the bug it describes, drop the theme.

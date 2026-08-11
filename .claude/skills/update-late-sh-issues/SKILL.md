@@ -5,15 +5,15 @@ description: Runs an incremental ingestion of late.sh feedback, diffing bugs.txt
 
 # Update late.sh issues
 
-Full design and rationale for every step below live in [`docs/ingestion_process.md`](../../../docs/ingestion_process.md) — read it first if anything here is unclear. This skill runs an incremental ingestion: it reads only what was added to `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` since the last ingestion.
+Full design and rationale for every step below live in [`docs/ingestion_process.md`](../../../docs/ingestion_process.md) — read it first if anything here is unclear. This skill runs an incremental ingestion: it reads only what was added to `bugs.txt` and `suggestions.txt`, straight from `mpiorowski/late-sh` on GitHub, since the last ingestion. No local copy of either file is written.
 
 Do not run this skill if `data/ingestion/state.yaml` does not exist yet — that means no first ingestion has happened, and what is needed instead is `/backfill-late-sh-issues`. Ask the person running this skill to confirm before continuing if that file is missing.
 
 ## Steps
 
 1. Read `lastIngestedCommit` from `data/ingestion/state.yaml`.
-2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch (for example with `gh api repos/mpiorowski/late-sh/commits/main --jq .sha`). Run `npm run import:feedback` to refresh `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` so both match that commit. If the resolved commit hash is the same as `lastIngestedCommit`, stop here and report that there is nothing new to ingest.
-3. Fetch `feedback/bugs.txt` and `feedback/suggestions.txt` as they read at `lastIngestedCommit` (for example with `gh api repos/mpiorowski/late-sh/contents/feedback/{fileName}?ref={lastIngestedCommit}` or a raw-content URL pinned to that commit), and diff them against the freshly downloaded files. Keep only the lines that were added since `lastIngestedCommit` — this is the set of new reports to ingest.
+2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch (for example with `gh api repos/mpiorowski/late-sh/commits/main --jq .sha`). If the resolved commit hash is the same as `lastIngestedCommit`, stop here and report that there is nothing new to ingest. Otherwise fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly (for example with `gh api repos/mpiorowski/late-sh/contents/feedback/{fileName}?ref={commitSha} --jq .content | base64 -d`). Do not write either file to disk — read the content directly.
+3. Fetch `feedback/bugs.txt` and `feedback/suggestions.txt` as they read at `lastIngestedCommit`, the same way, and diff them against the content fetched in step 2. Keep only the lines that were added since `lastIngestedCommit` — this is the set of new reports to ingest.
 4. Fetch the current list of open issues on `jeromeetienne/late-sh-feedback` (`gh issue list --repo jeromeetienne/late-sh-feedback --state open --json number,title,body,labels`) to compare new reports against.
 5. For each new report, decide which of the following it is, by reading and judgment, not by a keyword match:
    - **Matches an open issue's theme.** Draft an append: a new "What people said" bullet in the same shape used by `/backfill-late-sh-issues` (`- {datetime, UTC} **{nickname}**: "{content}" [link]({permalink})`, permalink pinned to the commit resolved in step 2), plus an updated "Reported N times, from ... to ..." closing line.

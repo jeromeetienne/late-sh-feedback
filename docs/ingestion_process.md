@@ -1,6 +1,6 @@
 # The ingestion process
 
-This document describes how the raw feedback in `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` is turned into GitHub issues on [jeromeetienne/late-sh-feedback](https://github.com/jeromeetienne/late-sh-feedback). It is the design behind two Claude Code skills, `/backfill-late-sh-issues` and `/update-late-sh-issues`, described in full in their own `SKILL.md` files at `.claude/skills/backfill-late-sh-issues/SKILL.md` and `.claude/skills/update-late-sh-issues/SKILL.md`.
+This document describes how the raw feedback in `bugs.txt` and `suggestions.txt`, read straight from the `feedback` folder of the [mpiorowski/late-sh](https://github.com/mpiorowski/late-sh) GitHub repository, is turned into GitHub issues on [jeromeetienne/late-sh-feedback](https://github.com/jeromeetienne/late-sh-feedback). No local copy of either file is kept — every read is pinned to one commit hash of `mpiorowski/late-sh` and fetched directly with `gh`. It is the design behind two Claude Code skills, `/backfill-late-sh-issues` and `/update-late-sh-issues`, described in full in their own `SKILL.md` files at `.claude/skills/backfill-late-sh-issues/SKILL.md` and `.claude/skills/update-late-sh-issues/SKILL.md`.
 
 There are two distinct passes over the feedback files, not one:
 
@@ -103,9 +103,9 @@ This is the commit the first six issues were published from. `/update-late-sh-is
 
 ## The first ingestion
 
-Run with `/backfill-late-sh-issues`. It reads the whole history of `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` at one pinned commit, not only the most recent months:
+Run with `/backfill-late-sh-issues`. It reads the whole history of `bugs.txt` and `suggestions.txt` at one pinned commit, not only the most recent months:
 
-1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and refresh `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` with `npm run import:feedback` so both files match that commit.
+1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly from GitHub, without writing either to a local file.
 2. Read both files in full and group every message into themes, as described above.
 3. For each theme, cross-check the pull request history of `mpiorowski/late-sh` as described above, and drop or narrow themes that are already handled.
 4. For each remaining theme, draft an issue body using the template above, with one type label, one area label, and no `confirmed` label.
@@ -118,8 +118,8 @@ Run with `/backfill-late-sh-issues`. It reads the whole history of `data/feedbac
 Run with `/update-late-sh-issues`. It reads only what changed since `data/ingestion/state.yaml`:
 
 1. Read `lastIngestedCommit` from `data/ingestion/state.yaml`.
-2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and refresh `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` with `npm run import:feedback`.
-3. Fetch `bugs.txt` and `suggestions.txt` as they read at `lastIngestedCommit`, and diff them against the freshly downloaded files, to find only the lines that were added since.
+2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly from GitHub, without writing either to a local file.
+3. Fetch `bugs.txt` and `suggestions.txt` as they read at `lastIngestedCommit`, and diff them against the content fetched in step 2, to find only the lines that were added since.
 4. For each added line, decide whether it belongs to a theme already tracked by an open issue, or starts a new theme:
    - **Matches an open issue.** Append a new "What people said" bullet to that issue's body, in the format above, and update the "Reported N times, from ... to ..." line to include the new report.
    - **Matches a closed issue.** Note it for the person running the skill rather than silently reopening anything — a report against a `status:fixed` issue may be a regression, and a report against a `status:declined` or `status:stale` issue may mean it is worth raising again. Let the person decide.

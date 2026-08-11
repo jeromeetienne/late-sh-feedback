@@ -1,7 +1,7 @@
 # Directory Context: `/.claude/skills`
 
 ## Purpose
-Claude Code skills that carry out the ingestion process described in `../../docs/ingestion_process.md` — turning `data/feedback/bugs.txt` and `data/feedback/suggestions.txt` into GitHub issues on `jeromeetienne/late-sh-feedback`.
+Claude Code skills that carry out the ingestion process described in `../../docs/ingestion_process.md` — turning `bugs.txt` and `suggestions.txt`, read straight from `mpiorowski/late-sh` on GitHub, into GitHub issues on `jeromeetienne/late-sh-feedback`.
 
 ## Key Exports & Entry Points
 - `backfill-late-sh-issues/SKILL.md`: The first ingestion, reading the whole history of both feedback files. Run once.
