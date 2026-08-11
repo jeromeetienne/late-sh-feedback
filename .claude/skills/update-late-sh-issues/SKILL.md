@@ -9,6 +9,22 @@ Full design and rationale for every step below live in [`docs/ingestion_process.
 
 Do not run this skill if `data/ingestion/state.yaml` does not exist yet — that means no first ingestion has happened, and what is needed instead is `/backfill-late-sh-issues`. Ask the person running this skill to confirm before continuing if that file is missing.
 
+## Arguments
+
+This skill takes one optional argument.
+
+- No argument: run the incremental ingestion described below.
+- `help`: print the following and stop, without reading `data/ingestion/state.yaml`, resolving any commit, or drafting anything.
+  ```
+  /update-late-sh-issues [help]
+
+  Runs an incremental ingestion of late.sh feedback into GitHub issues on jeromeetienne/late-sh-feedback,
+  reading only what was added to bugs.txt and suggestions.txt since the last ingestion.
+
+    (no argument)   Diff against the last ingested commit and apply confirmed changes.
+    help            Show this help and do nothing else.
+  ```
+
 ## Steps
 
 1. Read `lastIngestedCommit` from `data/ingestion/state.yaml`.
