@@ -9,10 +9,28 @@ Full design and rationale for every step below live in [`docs/ingestion_process.
 
 Do not run this skill if `data/ingestion/state.yaml` already exists and has a `lastIngestedCommit` — that means a first ingestion already happened, and what is needed now is `/update-late-sh-issues` instead. Ask the person running this skill to confirm before continuing if that file is already present.
 
+## Arguments
+
+This skill takes one optional argument.
+
+- No argument: read the whole history of `bugs.txt` and `suggestions.txt`, from the first message to the last.
+- A date, in `YYYY-MM-DD` form: read only messages timestamped on or after that date, UTC. Messages before that date are skipped outright, not deferred — they will never be picked up by a later `/update-late-sh-issues` run, since that skill only reads what was added after the commit this run finishes at. Only pass a starting date when the person running this skill has said the older messages should stay out of the tracker; otherwise omit the argument.
+- `help`: print the following and stop, without reading any feedback, resolving any commit, or drafting anything.
+  ```
+  /backfill-late-sh-issues [YYYY-MM-DD | help]
+
+  Runs the first ingestion of late.sh feedback into GitHub issues on jeromeetienne/late-sh-feedback.
+
+    (no argument)   Read the whole history of bugs.txt and suggestions.txt.
+    YYYY-MM-DD      Read only messages timestamped on or after this date, UTC.
+                     Earlier messages are skipped outright, not deferred to a later update.
+    help            Show this help and do nothing else.
+  ```
+
 ## Steps
 
 1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch (for example with `gh api repos/mpiorowski/late-sh/commits/main --jq .sha`). Fetch `bugs.txt` and `suggestions.txt` at that commit from [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback) (for example with `gh api repos/mpiorowski/late-sh/contents/feedback/{fileName}?ref={commitSha} --jq .content | base64 -d`, or the equivalent raw-content URL pinned to that commit). Do not write either file to disk — read the content directly. Both files are regenerated on every merged pull request of `mpiorowski/late-sh`, so the commit hash resolved here is the only thing that pins what was actually read — see `docs/ingestion_process.md`.
-2. Read both files in full. Group every message into themes: one theme per underlying bug or underlying request, even when it is worded differently across messages, or split across the two files. Do this by reading and judgment, not by a keyword match — see `docs/ingestion_process.md` for a worked example.
+2. Read both files in full, or, if a starting date argument was given, read both files in full but keep only the messages timestamped on or after that date. Group the kept messages into themes: one theme per underlying bug or underlying request, even when it is worded differently across messages, or split across the two files. Do this by reading and judgment, not by a keyword match — see `docs/ingestion_process.md` for a worked example.
 3. For each theme, cross-check the pull request history of `mpiorowski/late-sh` before drafting anything:
    - If a merged pull request already does what the theme asks, or already fixes the bug it describes, drop the theme.
    - If a maintainer already declined the same request, in a pull request or a pull request comment, drop the theme.
