@@ -9,4 +9,4 @@ Holds the small data files of this project. There is no local copy of `mpiorowsk
 
 ## Local Rules & Boundaries
 - Curated files are hand-maintained and no script may overwrite them. This applies to `identity/`, and each such folder must say so in its own `CONTEXT.md`.
-- `ingestion/` is a second case: hand-initialized once, then maintained by the `/update-late-sh-issues` skill, not by a person.
+- `ingestion/` is a second case: hand-initialized once, then maintained by the `/latesh-update-issues` skill, not by a person.

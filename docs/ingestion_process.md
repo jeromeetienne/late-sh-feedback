@@ -1,6 +1,6 @@
 # The ingestion process
 
-This document describes how the raw feedback in `bugs.txt` and `suggestions.txt`, read straight from the `feedback` folder of the [mpiorowski/late-sh](https://github.com/mpiorowski/late-sh) GitHub repository, is turned into GitHub issues on [jeromeetienne/late-sh-feedback](https://github.com/jeromeetienne/late-sh-feedback). No local copy of either file is kept — every read is pinned to one commit hash of `mpiorowski/late-sh` and fetched directly with `gh`. It is the design behind two Claude Code skills, `/backfill-late-sh-issues` and `/update-late-sh-issues`, described in full in their own `SKILL.md` files at `.claude/skills/backfill-late-sh-issues/SKILL.md` and `.claude/skills/update-late-sh-issues/SKILL.md`.
+This document describes how the raw feedback in `bugs.txt` and `suggestions.txt`, read straight from the `feedback` folder of the [mpiorowski/late-sh](https://github.com/mpiorowski/late-sh) GitHub repository, is turned into GitHub issues on [jeromeetienne/late-sh-feedback](https://github.com/jeromeetienne/late-sh-feedback). No local copy of either file is kept — every read is pinned to one commit hash of `mpiorowski/late-sh` and fetched directly with `gh`. It is the design behind two Claude Code skills, `/latesh-backfill-issues` and `/latesh-update-issues`, described in full in their own `SKILL.md` files at `.claude/skills/latesh-backfill-issues/SKILL.md` and `.claude/skills/latesh-update-issues/SKILL.md`.
 
 There are two distinct passes over the feedback files, not one:
 
@@ -41,7 +41,7 @@ Area, exactly one of, chosen from the `late-ssh/src/app/*` module that the theme
 
 Review state, added by a human, never by a skill:
 
-- `confirmed` — a human has verified that the bug is real. An issue without `confirmed` still needs a human to look at it and decide whether it is real or should be closed. Neither `/backfill-late-sh-issues` nor `/update-late-sh-issues` ever adds this label — only a person reviewing the issue on GitHub does.
+- `confirmed` — a human has verified that the bug is real. An issue without `confirmed` still needs a human to look at it and decide whether it is real or should be closed. Neither `/latesh-backfill-issues` nor `/latesh-update-issues` ever adds this label — only a person reviewing the issue on GitHub does.
 
 Proposed, not created yet: a set of `status:*` labels to record why an issue was closed (`status:fixed`, `status:declined`, `status:duplicate`, `status:stale`) and one to mark an issue as being worked on (`status:in-progress`). Neither skill uses these labels until they exist in the repository label list.
 
@@ -103,11 +103,11 @@ Neither skill ever calls `gh issue create` or `gh issue edit` without a person f
 lastIngestedCommit: 2068af1ef30bdac587decd6433bf6f97bfb2ccee
 ```
 
-This is the commit the first six issues were published from. `/update-late-sh-issues` reads this file to know where to start its diff, and rewrites it, after a person confirms the publish, to the commit it just finished reading. The file is hand-initialized once by the first ingestion and machine-maintained after that — do not hand-edit it once an update has run.
+This is the commit the first six issues were published from. `/latesh-update-issues` reads this file to know where to start its diff, and rewrites it, after a person confirms the publish, to the commit it just finished reading. The file is hand-initialized once by the first ingestion and machine-maintained after that — do not hand-edit it once an update has run.
 
 ## The first ingestion
 
-Run with `/backfill-late-sh-issues`. It reads the whole history of `bugs.txt` and `suggestions.txt` at one pinned commit, not only the most recent months:
+Run with `/latesh-backfill-issues`. It reads the whole history of `bugs.txt` and `suggestions.txt` at one pinned commit, not only the most recent months:
 
 1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `bugs.txt` and `suggestions.txt` at that commit directly from [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback), without writing either to a local file.
 2. Read both files in full and group every message into themes, as described above.
@@ -119,7 +119,7 @@ Run with `/backfill-late-sh-issues`. It reads the whole history of `bugs.txt` an
 
 ## Every ingestion after that
 
-Run with `/update-late-sh-issues`. It reads only what changed since `data/ingestion/state.yaml`:
+Run with `/latesh-update-issues`. It reads only what changed since `data/ingestion/state.yaml`:
 
 1. Read `lastIngestedCommit` from `data/ingestion/state.yaml`.
 2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `bugs.txt` and `suggestions.txt` at that commit directly from [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback), without writing either to a local file.

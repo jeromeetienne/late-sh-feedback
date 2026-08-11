@@ -7,4 +7,4 @@ Tracks which commit of `mpiorowski/late-sh` was last read when turning `bugs.txt
 - `state.yaml`: One field, `lastIngestedCommit`, the commit hash the last ingestion read the feedback files at.
 
 ## Local Rules & Boundaries
-- Hand-initialized once by the first ingestion (the `/backfill-late-sh-issues` skill), then rewritten only by the `/update-late-sh-issues` skill, after a person confirms a publish. Do not hand-edit `state.yaml` once an update has run.
+- Hand-initialized once by the first ingestion (the `/latesh-backfill-issues` skill), then rewritten only by the `/latesh-update-issues` skill, after a person confirms a publish. Do not hand-edit `state.yaml` once an update has run.

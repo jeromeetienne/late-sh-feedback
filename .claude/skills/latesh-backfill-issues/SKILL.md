@@ -1,23 +1,23 @@
 ---
-name: backfill-late-sh-issues
-description: Runs the first ingestion of late.sh feedback, reading the whole history of bugs.txt and suggestions.txt and drafting GitHub issues on jeromeetienne/late-sh-feedback for every theme found. Use this only once, or to rebuild the tracker from scratch — for everything after the first run, use update-late-sh-issues instead.
+name: latesh-backfill-issues
+description: Runs the first ingestion of late.sh feedback, reading the whole history of bugs.txt and suggestions.txt and drafting GitHub issues on jeromeetienne/late-sh-feedback for every theme found. Use this only once, or to rebuild the tracker from scratch — for everything after the first run, use latesh-update-issues instead.
 ---
 
 # Backfill late.sh issues
 
 Full design and rationale for every step below live in [`docs/ingestion_process.md`](../../../docs/ingestion_process.md) — read it first if anything here is unclear. This skill runs the first ingestion: the one pass that reads the whole history of `bugs.txt` and `suggestions.txt`, straight from `mpiorowski/late-sh` on GitHub, not only the most recent months. No local copy of either file is written.
 
-Do not run this skill if `data/ingestion/state.yaml` already exists and has a `lastIngestedCommit` — that means a first ingestion already happened, and what is needed now is `/update-late-sh-issues` instead. Ask the person running this skill to confirm before continuing if that file is already present.
+Do not run this skill if `data/ingestion/state.yaml` already exists and has a `lastIngestedCommit` — that means a first ingestion already happened, and what is needed now is `/latesh-update-issues` instead. Ask the person running this skill to confirm before continuing if that file is already present.
 
 ## Arguments
 
 This skill takes one optional argument.
 
 - No argument: read the whole history of `bugs.txt` and `suggestions.txt`, from the first message to the last.
-- A date, in `YYYY-MM-DD` form: read only messages timestamped on or after that date, UTC. Messages before that date are skipped outright, not deferred — they will never be picked up by a later `/update-late-sh-issues` run, since that skill only reads what was added after the commit this run finishes at. Only pass a starting date when the person running this skill has said the older messages should stay out of the tracker; otherwise omit the argument.
+- A date, in `YYYY-MM-DD` form: read only messages timestamped on or after that date, UTC. Messages before that date are skipped outright, not deferred — they will never be picked up by a later `/latesh-update-issues` run, since that skill only reads what was added after the commit this run finishes at. Only pass a starting date when the person running this skill has said the older messages should stay out of the tracker; otherwise omit the argument.
 - `help`: print the following and stop, without reading any feedback, resolving any commit, or drafting anything.
   ```
-  /backfill-late-sh-issues [YYYY-MM-DD | help]
+  /latesh-backfill-issues [YYYY-MM-DD | help]
 
   Runs the first ingestion of late.sh feedback into GitHub issues on jeromeetienne/late-sh-feedback.
 
