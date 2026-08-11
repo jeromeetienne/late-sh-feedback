@@ -9,6 +9,10 @@ There are two distinct passes over the feedback files, not one:
 
 Both passes share the same building blocks: a theme, a label taxonomy, a permalink scheme, an issue body template, and a rule that says a person must approve any publish or edit before it happens. Each of these is described below before the two passes themselves.
 
+## Where the files live
+
+`bugs.txt` and `suggestions.txt` live in the `feedback` folder of `mpiorowski/late-sh`, at [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback). Both files are regenerated on every merged pull request of `mpiorowski/late-sh` — not on a separate schedule of their own — so fetching `main` returns whatever the most recently merged pull request left behind, and a line number read at one commit is not guaranteed to still name the same line at the next.
+
 ## What is a theme
 
 A theme is one underlying bug or one underlying request, told by one or more chat messages, possibly weeks or months apart, possibly worded differently each time, possibly split across `bugs.txt` and `suggestions.txt`. One GitHub issue tracks exactly one theme. Grouping messages into themes is a judgment call made by reading the messages, not a keyword match — [issue #1](https://github.com/jeromeetienne/late-sh-feedback/issues/1) is an example: two reports from `bugs.txt` and one from `suggestions.txt`, worded three different ways, all describing the same nonogram puzzle generator defect.
@@ -49,7 +53,7 @@ Every quoted report links to the exact line it came from, pinned to the commit t
 https://github.com/mpiorowski/late-sh/blob/{commitSha}/feedback/{fileName}#L{lineNumber}
 ```
 
-`{commitSha}` is the full commit hash of `mpiorowski/late-sh` that `bugs.txt` and `suggestions.txt` were read from, `{fileName}` is `bugs.txt` or `suggestions.txt`, and `{lineNumber}` is the one-based line number inside that file at that commit. [[late_sh_feedback_files_update_cadence]]: both files are regenerated on every merged pull request of `mpiorowski/late-sh`, so a line number is only valid for the one commit it was read at — pinning to `main` would silently go stale or point at the wrong line as soon as the next pull request merges.
+`{commitSha}` is the full commit hash of `mpiorowski/late-sh` that `bugs.txt` and `suggestions.txt` were read from, `{fileName}` is `bugs.txt` or `suggestions.txt`, and `{lineNumber}` is the one-based line number inside that file at that commit. As said above, both files are regenerated on every merged pull request of `mpiorowski/late-sh`, so a line number is only valid for the one commit it was read at — pinning to `main` would silently go stale or point at the wrong line as soon as the next pull request merges.
 
 ## The issue body template
 
@@ -105,7 +109,7 @@ This is the commit the first six issues were published from. `/update-late-sh-is
 
 Run with `/backfill-late-sh-issues`. It reads the whole history of `bugs.txt` and `suggestions.txt` at one pinned commit, not only the most recent months:
 
-1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly from GitHub, without writing either to a local file.
+1. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `bugs.txt` and `suggestions.txt` at that commit directly from [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback), without writing either to a local file.
 2. Read both files in full and group every message into themes, as described above.
 3. For each theme, cross-check the pull request history of `mpiorowski/late-sh` as described above, and drop or narrow themes that are already handled.
 4. For each remaining theme, draft an issue body using the template above, with one type label, one area label, and no `confirmed` label.
@@ -118,7 +122,7 @@ Run with `/backfill-late-sh-issues`. It reads the whole history of `bugs.txt` an
 Run with `/update-late-sh-issues`. It reads only what changed since `data/ingestion/state.yaml`:
 
 1. Read `lastIngestedCommit` from `data/ingestion/state.yaml`.
-2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `feedback/bugs.txt` and `feedback/suggestions.txt` at that commit directly from GitHub, without writing either to a local file.
+2. Resolve the current commit hash of `mpiorowski/late-sh`'s `main` branch, and fetch `bugs.txt` and `suggestions.txt` at that commit directly from [github.com/mpiorowski/late-sh/tree/main/feedback](https://github.com/mpiorowski/late-sh/tree/main/feedback), without writing either to a local file.
 3. Fetch `bugs.txt` and `suggestions.txt` as they read at `lastIngestedCommit`, and diff them against the content fetched in step 2, to find only the lines that were added since.
 4. For each added line, decide whether it belongs to a theme already tracked by an open issue, or starts a new theme:
    - **Matches an open issue.** Append a new "What people said" bullet to that issue's body, in the format above, and update the "Reported N times, from ... to ..." line to include the new report.
