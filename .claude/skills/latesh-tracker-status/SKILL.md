@@ -27,14 +27,16 @@ This skill takes one optional argument.
 
 ### 1. Read the current issue tracker state
 
-Fetch every open issue on `jeromeetienne/late-sh-feedback`, with its number, title, creation date, and labels:
+Fetch every open issue on `jeromeetienne/late-sh-feedback`, with its number, title, body, and labels:
 
 ```
 gh api --paginate repos/jeromeetienne/late-sh-feedback/issues --method GET -f state=open -f per_page=100 \
-  --jq '.[] | select(.pull_request == null) | {number, title, created_at, labels: [.labels[].name]}'
+  --jq '.[] | select(.pull_request == null) | {number, title, body, labels: [.labels[].name]}'
 ```
 
 The `select(.pull_request == null)` step is needed because the GitHub issues endpoint also returns pull requests — this repository does not use pull requests, but drop them anyway in case one ever appears. Keep only open issues; closed issues are handled work and stay out of this dashboard.
+
+The `body` field is fetched, not just metadata, because the "Reports by day" panel needs the date each issue was actually *reported in chat*, not the date the GitHub issue itself was created. Every issue body has one or more `## What people said` bullets shaped `- {date} {time} UTC **{nickname}**: ...`, per the template in `docs/ingestion_process.md` — extract the `{date}` (`YYYY-MM-DD`) from each bullet in a given issue's body, and take the earliest one as that issue's `firstReportDate`. Do not use the issue's `created_at` for this — when a batch of issues is published together (for example by `/latesh-backfill-issues`), every issue in that batch shares the same `created_at`, which collapses the whole histogram into a single day and defeats the point of the panel.
 
 ### 2. Compute the numbers the dashboard needs
 
@@ -47,8 +49,8 @@ From the fetched list:
 - `AREAS`: one row per area label in the taxonomy — `area:games`, `area:chat`, `area:directory`, `area:audio`, `area:notifications`, `area:profile`, `area:theming`, `area:terminal`, `area:economy`, `area:voice`, `area:pets` — each with its own open bug count and open suggestion count. Include every area even when both counts are zero. Sort the rows by total (bug count plus suggestion count) descending; break ties by the order the areas are listed above.
 - `EMPTY_AREA_COUNT`: how many of the eleven areas above have a total of zero.
 - `MIN_ISSUE_NUMBER`, `MAX_ISSUE_NUMBER`: the lowest and highest open issue numbers.
-- `DAYS`: one entry per calendar day (UTC) that has at least one open issue, from the earliest creation date to the latest, as `[MM-DD, count]` pairs, sorted chronologically. A day with no issues created still needs an entry with count `0` if it falls between the first and last day, so the bars read as a continuous timeline.
-- `FIRST_DATE`, `LAST_DATE`: the earliest and latest creation dates among open issues, as `YYYY-MM-DD`.
+- `DAYS`: one entry per calendar day (UTC) from the earliest `firstReportDate` to the latest, as `[MM-DD, count]` pairs, sorted chronologically, where `count` is how many open issues have that `firstReportDate`. A day with no matching issues still needs an entry with count `0` if it falls between the first and last day, so the bars read as a continuous timeline.
+- `FIRST_DATE`, `LAST_DATE`: the earliest and latest `firstReportDate` among open issues, as `YYYY-MM-DD`.
 - `GENERATED_AT`: the current date and time in UTC, as `YYYY-MM-DD HH:MM UTC`.
 
 ### 3. Fill in the HTML template
@@ -97,7 +99,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
   }
 
   .page {
-    max-width: 980px;
+    max-width: 1080px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -442,7 +444,7 @@ Keep the `<meta charset="utf-8">` line exactly where it is, as the first line of
 
     <div class="panel">
       <p class="panel-title">Reports by day</p>
-      <p class="panel-note">Issue-open date, {{FIRST_DATE}} → {{LAST_DATE}}.</p>
+      <p class="panel-note">First-report date, {{FIRST_DATE}} → {{LAST_DATE}}.</p>
       <div class="hist" id="hist"></div>
       <div class="hist-labels" id="hist-labels"></div>
     </div>
@@ -507,9 +509,9 @@ The Artifact tool and the sandboxed browser pane cannot screenshot a locally-wri
 2. Render the page to a PNG file with a headless Chrome or Chromium binary already installed on the machine (for example, on macOS, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`):
    ```
    {chromeBinaryPath} --headless --disable-gpu --screenshot={repoRoot}/data/tracker-status/dashboard.png \
-     --window-size=1085,1300 --hide-scrollbars http://127.0.0.1:{port}/latesh-tracker-status.html
+     --window-size=1180,1280 --hide-scrollbars http://127.0.0.1:{port}/latesh-tracker-status.html
    ```
-   The window width, `1085`, is not arbitrary — it is the `.page` element's `max-width: 980px` plus its `body` padding of `48px` on each side, from the template in step 3, plus a few pixels of slack. Rendering at a much wider window (for example `1600`) leaves the page centered in a lot of empty space, which shows up as huge dead margins on both sides of the image. If the `max-width` or the horizontal `body` padding in the template ever changes, change this width to match — `980 + 2 * {horizontal padding}` plus a small margin.
+   The window width, `1180`, is not arbitrary — it is the `.page` element's `max-width: 1080px` plus its `body` padding of `48px` on each side, from the template in step 3, plus a few pixels of slack. Rendering at a much wider window (for example `1600`) leaves the page centered in a lot of empty space, which shows up as huge dead margins on both sides of the image. If the `max-width` or the horizontal `body` padding in the template ever changes, change this width to match — `max-width + 2 * {horizontal padding}` plus a small margin.
 3. Stop the local HTTP server.
 4. Read the resulting `data/tracker-status/dashboard.png` back to confirm the four panels (KPI row, area breakdown, donut, ring, histogram) rendered correctly, every label is legible at normal size, and there is no mojibake in the em dash or arrow characters.
 
